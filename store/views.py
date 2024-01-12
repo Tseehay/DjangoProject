@@ -77,3 +77,25 @@ class Rate(View):
             return login_required(_post)(request, *args, **kwargs)
 
         return _post(request, *args, **kwargs)
+    
+from django.shortcuts import render, get_object_or_404
+from django.contrib.auth.decorators import login_required
+from .models import Course, Rating, Review
+
+
+@login_required
+def rate_course(request, course_id):
+    course = get_object_or_404(Course, id=course_id)
+    if request.method == 'POST':
+        rating = int(request.POST['rating'])
+        Rating.objects.update_or_create(course=course, user=request.user, defaults={'rating': rating})
+    return render(request, 'rate_course.html', {'course': course})
+
+
+@login_required
+def review_course(request, course_id):
+    course = get_object_or_404(Course, id=course_id)
+    if request.method == 'POST':
+        text = request.POST['review']
+        Review.objects.create(course=course, user=request.user, text=text)
+    return render(request, 'review_course.html', {'course': course})

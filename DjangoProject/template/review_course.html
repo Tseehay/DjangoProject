@@ -1,0 +1,7 @@
+<h1>{{ course.title }}</h1>
+<form method="POST" action="{% url 'review_course' course.id %}">
+  {% csrf_token %}
+  <label for="review">Review:</label>
+  <textarea name="review"></textarea>
+  <button type="submit">Submit</button>
+</form>
